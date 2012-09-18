@@ -7,6 +7,7 @@ Notes
 =====
 
 This isn't very sophisticated.  You probably want to use a real static analyzer instead.  Basically, it just goes through files as follows:
+
 1. pull out #includes
 2. strip filename out of include
 3. Check to see if you reference the same string as that filename (for instance, if you include "SomeClass.h", see if SomeClass gets mentioned in your .cpp file)
