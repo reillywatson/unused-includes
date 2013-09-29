@@ -1,5 +1,14 @@
 def getIncludes(lines):
-	return [a for a in lines if '#include' in a]
+	ifdefStack = 0
+	includes = []
+	for line in lines:
+		if '#if' in line:
+			ifdefStack = ifdefStack + 1
+		elif '#endif' in line:
+			ifdefStack = ifdefStack - 1
+		if '#include' in line and ifdefStack == 0:
+			includes.append(line)
+	return includes
 
 def getClassName(include):
 	return include.split('/')[-1].split('.')[0].replace('<','').replace('>','').replace('"', '').split(' ')[-1]
@@ -7,9 +16,9 @@ def getClassName(include):
 def unusedIncludes(path):
 	unused = []
 	f = open(path).read()
-	lines = set(f.split('\n'))
-	includes = set(getIncludes(lines))
-	lines = lines - includes
+	lines = f.split('\n')
+	includes = getIncludes(lines)
+	lines = [a for a in lines if a not in includes]
 	for include in includes:
 		name = getClassName(include)
 		if len([a for a in lines if name in a]) == 0:
